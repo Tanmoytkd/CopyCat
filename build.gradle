@@ -1,0 +1,35 @@
+plugins {
+    id 'java'
+}
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+group 'CopyCat'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+if (!hasProperty('mainClass')) {
+    ext.mainClass = 'copycat.App'
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+jar {
+    manifest {
+        attributes(
+                'Class-Path': configurations.compileClasspath.files.collect {"$it.name"}.join(' '),
+                'Main-Class': 'copycat.App'
+        )
+    }
+    from {
+        configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
