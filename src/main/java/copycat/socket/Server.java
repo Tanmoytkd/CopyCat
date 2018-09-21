@@ -32,6 +32,9 @@ public class Server {
                     }
 
                     if (newClipboard!=null && !newClipboard.equals(clipboard) && !newClipboard.equals("")) {
+                        System.out.println("New Data:");
+                        System.out.println(newClipboard);
+
                         sendData(newClipboard);
                         clipboard = newClipboard;
                     }
@@ -102,11 +105,13 @@ public class Server {
                 Transferable clipboardContent = systemClipboard.getContents(null);
                 if (clipboardContent != null && clipboardContent.isDataFlavorSupported(DataFlavor.stringFlavor)) {
                     clipboard = (String) clipboardContent.getTransferData(DataFlavor.stringFlavor);
+                    System.out.println(clipboard);
                 }
             } catch (IllegalStateException e) {
                 System.out.println("Clipboard unavailabe");
             }
 
+            System.out.println(clipboard);
 
             ServerSocket ss = new ServerSocket(3333);
 
