@@ -24,6 +24,7 @@ public class Client {
             Scanner sc = new Scanner(System.in);
             ip = sc.next();
             s = new Socket(ip, 3333);
+            System.out.println("Connected to:"+s.getInetAddress().getHostName());
 
             input = new ObjectInputStream(s.getInputStream());
             output = new ObjectOutputStream(s.getOutputStream());

@@ -14,8 +14,9 @@ import java.util.logging.Logger;
 
 public class Server {
 
-    private static Boolean running = true;
+    public static Boolean running = true;
     private static ArrayList<ObjectOutputStream> outputList = new ArrayList<>();
+    private static ArrayList<Socket> sockets = new ArrayList<>();
     private static String clipboard = "";
     private static Clipboard systemClipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 
@@ -36,6 +37,7 @@ public class Server {
                         System.out.println(newClipboard);
 
                         sendData(newClipboard);
+                        System.out.println("SendData Returned");
                         clipboard = newClipboard;
                     }
                     sleep(80);
@@ -51,12 +53,15 @@ public class Server {
         private ObjectInputStream input;
 
         public ClientHandler(Socket s) throws IOException {
+            System.out.println("Input handler for "+ s.getInetAddress().getHostName()+" will be created");
             this.socket = s;
             input = new ObjectInputStream(socket.getInputStream());
+            System.out.println("Input handler for "+ s.getInetAddress().getHostName()+" has been created");
         }
 
         @Override
         public void run() {
+            System.out.println("Input handler for "+ socket.getInetAddress().getHostName()+" has started");
             while (running) {
                 String newClipboard = "";
                 try {
@@ -91,8 +96,10 @@ public class Server {
     private static void sendData(String newClipboard) {
         for(ObjectOutputStream output: outputList) {
             try {
+                System.out.println("Trying to send data");
                 output.writeObject(newClipboard);
                 output.flush();
+                System.out.println("Data Sent");
             } catch (IOException e) {
                 System.out.println("Data Sending Failure");
             }
@@ -121,13 +128,16 @@ public class Server {
             while(running) {
                 Socket s = ss.accept();
                 System.out.println("Connected to: "+s.getInetAddress().getHostName());
-                new ClientHandler(s).start();
                 outputList.add(new ObjectOutputStream(s.getOutputStream()));
+                sockets.add(s);
+                new ClientHandler(s).start();
+
             }
 
             sender.join();
         } catch (Exception e) {
             System.out.println(e);
+            e.printStackTrace();
         }
 
     }

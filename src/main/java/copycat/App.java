@@ -21,12 +21,17 @@ public class App {
             Server.start();
         }
 
-        if("host".equals(args[0])) {
+        else if("host".equals(args[0] ) || "server".equals(args[0])) {
             Server.start();
         }
 
-        if("client".equals(args[0])) {
+        else if("client".equals(args[0])) {
             Client.start();
+        }
+
+        boolean x = true;
+        while(x) {
+            continue;
         }
     }
 }
